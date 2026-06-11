@@ -1,0 +1,32 @@
+name: CI/CD Pipeline for GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v4
+
+      - name: 配置GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: 上传静态文件
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: 部署到GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
